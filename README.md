@@ -1,2 +1,93 @@
-# house_price_prediction_pipeline
-A complete machine learning pipeline for real estate price prediction, featuring automated data cleaning, feature engineering (e.g., ring road encoding, floor plan parsing), and model comparison (Ridge, Random Forest, LightGBM, etc.). The optimized Random Forest model achieves R²=0.9536.
+# 二手房价格预测：基于机器学习的全流程建模项目
+
+**核心成就**：针对超过8.4万条包含复杂中文文本特征的二手房数据，构建了一个端到端的机器学习管道。通过精细的特征工程与系统化的模型对比，优化的随机森林模型实现了 **R² = 0.9536** 的高精度预测。
+
+**项目亮点**：深入中国房产市场业务逻辑的特征工程 | 完整的 `Scikit-learn Pipeline` 与 `GridSearchCV` 实践 | 多模型对比与超参数优化
+
+[![GitHub](https://img.shields.io/badge/GitHub-查看完整代码-blue)](https://github.com/xie-liyuan/house_price_prediction_pipeline)
+[![Python](https://img.shields.io/badge/Python-3.7+-blue)]()
+
+---
+
+## 🎯 快速概览
+
+这是一个完整的数据科学项目，旨在预测中国二手房市场价格。项目**亮点在于对真实、杂乱业务数据（如“梯户比”、“房屋朝向”）的深度处理与建模能力**，展示了从原始数据到高精度预测模型的全流程。
+
+### **关键产出与模型性能**
+
+| 模型 | R² 分数 | RMSE | 训练耗时 | 关键特性 |
+| :--- | :--- | :--- | :--- | :--- |
+| **RandomForest (优化后)** | **0.9536** | **0.1909** | 较长 | **最佳模型**，泛化能力强 |
+| XGBoost | 0.9426 | 0.2083 | 中等 | 梯度提升树，表现优异 |
+| LightGBM | 0.9379 | 0.2209 | 快 | 高效的梯度提升框架 |
+| Ridge | 0.6629 | 0.5146 | 快 | 最佳线性模型，表明数据共线性严重 |
+
+> **结论**：树模型在处理本项目的复杂非线性关系上显著优于线性模型。通过`RandomizedSearchCV`对随机森林进行超参数联合优化，在维持高精度的同时提升了模型稳定性。
+
+---
+
+## 🔍 深入：特征工程（项目核心）
+
+本项目超过60%的工作量集中在贴合业务的特征工程上，以下是部分关键处理：
+
+| 原始特征 | 处理与衍生策略 | 业务逻辑与目的 |
+| :--- | :--- | :--- |
+| **环线** | 有序编码、创建“是否核心区”标签 | 将分类信息转换为保留位置关系的数值，捕捉地段价值 |
+| **房屋户型** | 正则解析出“室/厅/卫”数量，计算“卧卫比”，标记豪宅户型 | 将非结构化文本转化为可量化的居住空间指标 |
+| **梯户比例** | 解析“X梯Y户”，计算“电梯服务密度”，分级“拥挤度” | 量化居住密度与舒适度，影响房价的重要因素 |
+| **建筑面积/套内面积** | 计算“得房率”、“公摊面积”，按政策划分面积等级 | 衍生出影响房价的关键效率指标和分类标签 |
+| **房屋朝向** | 按价值偏好（南>东南>东>…）提取“主朝向”，标记优质朝向 | 编码中国购房者的明确偏好，影响价格 |
+
+---
+
+## 🛠️ 技术栈与项目架构
+
+### **核心技术栈**
+*   **语言**: Python 3
+*   **核心库**: Pandas, NumPy, Scikit-learn, Matplotlib/Seaborn
+*   **机器学习框架**: Scikit-learn Pipeline, GridSearchCV/RandomizedSearchCV
+*   **算法**: Ridge/Lasso, Random Forest, XGBoost, LightGBM
+
+
+### **项目文件结构**
+```
+house_price_prediction_pipeline/
+├── house_price_prediction.ipynb  # 主分析文件（完整流程）
+├── HousePrice_model_introduction_XieLiyuan.pdf  # 项目汇报幻灯片
+├── data_source.md                # 详细数据说明
+├── requirements.txt              # 项目依赖（精简版）
+└── README.md                     # 本文件
+```
+
+## 🚀 如何复现
+
+1.  **克隆仓库并安装依赖**
+    ```bash
+    git clone https://github.com/xie-liyuan/house_price_prediction_pipeline.git
+    cd house_price_prediction_pipeline
+    pip install -r requirements.txt
+    ```
+2.  **运行分析**
+    打开 `house_price_prediction.ipynb` 并运行所有单元格，即可复现从数据清洗到模型预测的全过程。
+
+---
+
+## 📊 模型构建流程
+本项目采用严谨的建模流程：
+1.  **自动化预处理管道**：使用 `ColumnTransformer` 构建可复用的清洗与编码流程。
+2.  **模型对比**：将预处理管道与多种模型（线性与树模型）结合，通过 `Pipeline` 封装，确保数据无泄漏。
+3.  **超参数调优**：使用 `GridSearchCV` (线性模型) 与 `RandomizedSearchCV` (树模型) 进行交叉验证调优，平衡精度与效率。
+4.  **评估与选择**：以 **R²** 和 **RMSE** 为主要指标，选择在验证集上表现最优且稳定的模型。
+
+---
+
+## 📈 总结与展望
+本项目证明了从**复杂的现实世界数据中提取洞察并构建高精度预测模型**的能力。核心价值体现在**业务理解、数据清洗、特征创造和模型优化**的全链条技术实践中。
+
+**未来可探索的方向**：
+*   引入外部数据（如学区、地铁站距离）作为新特征。
+*   尝试深度学习模型（如TabNet）或更复杂的集成方法。
+*   将最佳模型部署为简易的预测API。
+
+---
+*如果本项目对你有帮助或启发，欢迎在GitHub上⭐️支持！如有任何问题，欢迎通过Issue提出。*
